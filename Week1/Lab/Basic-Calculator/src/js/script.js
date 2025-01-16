@@ -22,7 +22,7 @@ function history(num1, num2, operation, result) {
     historyItem.textContent = `${num1} ${operation} ${num2} = ${result}`;
     history.push(historyItem);
     historyList.appendChild(historyItem);
-    console.log(history);
+    console.log(`${num1} ${operation} ${num2} = ${result}`);
 }
 
 /**
