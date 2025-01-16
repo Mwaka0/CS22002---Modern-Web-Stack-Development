@@ -9,6 +9,23 @@ function getNumbers() {
 }
 
 /**
+ * This function creates a history list of the operations performed
+ * @param {*} num1 
+ * @param {*} num2 
+ * @param {*} operation 
+ * @param {*} result 
+ */
+function history(num1, num2, operation, result) {
+    let history = [];
+    let historyList = document.getElementById('history');
+    let historyItem = document.createElement('li');
+    historyItem.textContent = `${num1} ${operation} ${num2} = ${result}`;
+    history.push(historyItem);
+    historyList.appendChild(historyItem);
+    console.log(history);
+}
+
+/**
  * A function that calculates the result of the operation based on the operation type
  * @param {*} operation 
  * @returns the result of the operation
@@ -51,15 +68,19 @@ function calculate(operation) {
     }
 
     // Display the result in the result field
+    history(num1, num2, operation, result);
     return result;
 }
 
+// Reset the input fields and the result field
 function reset() {
     document.getElementById("num1").value = "";
     document.getElementById("num2").value = "";
     document.getElementById("result").textContent = "";
+    document.getElementById('history').textContent = "";
 }
 
+// Add event listeners to the buttons
 window.onload = function() {
     document.getElementById('add').addEventListener('click', () => {
         document.getElementById('result').textContent = `${calculate('add')}`;
