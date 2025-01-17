@@ -9,22 +9,45 @@
     </head>
     <body>
         <h1>Basic Calculator</h1>
-        <div class="input-container">
-            <input type="number" id="num1" placeholder="First Number">
-            <input type="number" id="num2" placeholder="Second Number">
-        </div>
-        <div class="button-container">
-            <button id="add">Add</button>
-            <button id="subtract">Subtract</button>
-            <button id="multiply">Multiply</button>
-            <button id="divide">Divide</button>
-            <button id="reset">Reset</button>
-        </div>
-        <div class="result-container">
-            <h2>Result: <span id="result"></span></h2>
+        <div class="calculator-container">
+            <div class="theme-container">
+                <button id="light">Light</button>
+                <button id="dark">Dark</button>
+            </div> 
+            <div class="display-container">
+                <input type="text" id="display" readonly>
+            </div>
+            <div class="button-container">
+                <!-- Top row -->
+                <button id="reset">AC</button>
+                <button id="plusMinus">+/-</button>
+                <button id="percent">%</button>
+                <button id="divide">÷</button>
+                <!-- Second row -->
+                <button id="seven">7</button>
+                <button id="eight">8</button>
+                <button id="nine">9</button>
+                <button id="multiply">×</button>
+                <!-- Third row -->
+                <button id="four">4</button>
+                <button id="five">5</button>
+                <button id="six">6</button>
+                <button id="subtract">−</button>
+                <!-- Fourth row -->
+                <button id="one">1</button>
+                <button id="two">2</button>
+                <button id="three">3</button>
+                <button id="add">+</button>
+                <!-- Bottom row -->
+                <button id="clear">C</button>
+                <button id="zero" class="zero">0</button>
+                <button id="decimal">.</button>
+                <button id="equals">=</button>
+            </div>
         </div>
         <div class="history-container">
             <h2>History</h2>
             <ul id="history"></ul>
+        </div>
     </body>
 </html>

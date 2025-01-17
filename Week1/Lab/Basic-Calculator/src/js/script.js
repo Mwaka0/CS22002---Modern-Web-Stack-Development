@@ -1,103 +1,211 @@
+let currentInput = "";
+let previousInput = "";
+let operation = null;
+
 /**
- * A function that gets the numbers from the input fields
- * @returns num1 and num2
+ * A function that updates the display
  */
-function getNumbers() {
-    var num1 = parseFloat(document.getElementById("num1").value);
-    var num2 = parseFloat(document.getElementById("num2").value);
-    return {num1, num2};
+function updateDisplay() {
+    document.getElementById("display").value = currentInput;
 }
 
 /**
- * This function creates a history list of the operations performed
- * @param {*} num1 
- * @param {*} num2 
- * @param {*} operation 
- * @param {*} result 
+ * A function that handles number button clicks
+ * @param {string} number 
  */
-function history(num1, num2, operation, result) {
-    let history = [];
-    let historyList = document.getElementById('history');
-    let historyItem = document.createElement('li');
-    historyItem.textContent = `${num1} ${operation} ${num2} = ${result}`;
-    history.push(historyItem);
-    historyList.appendChild(historyItem);
-    console.log(`${num1} ${operation} ${num2} = ${result}`);
+function handleNumber(number) {
+    if (currentInput.length < 10) {
+        currentInput += number;
+        updateDisplay();
+    }
 }
 
 /**
- * A function that calculates the result of the operation based on the operation type
- * @param {*} operation 
- * @returns the result of the operation
+ * A function that handles operation button clicks
+ * @param {string} op 
  */
-function calculate(operation) {
-    // Get the numbers from the input fields
-    const {num1, num2} = getNumbers();
-    let result = 0;
+function handleOperation(op) {
+    if (currentInput === "" && op === "-") {
+        currentInput = "-";
+        updateDisplay();
+        return;
+    }
+    if (currentInput === "") return;
+    if (previousInput !== "") {
+        calculate();
+    }
+    operation = op;
+    previousInput = currentInput;
+    currentInput = "";
+}
 
-    // Check if the input is a number
-    if (isNaN(num1) || isNaN(num2)) {
-        console.log("Invalid input, please enter a valid number");
-        return "Error, please enter valid numbers in both fields.";
+/**
+ * A function that calculates the result of the operation
+ */
+function calculate() {
+    let result;
+    const prev = parseFloat(previousInput);
+    const current = parseFloat(currentInput);
+    
+    // Check if the input is invalid
+    if (isNaN(prev) || isNaN(current)) {
+        currentInput = "Error";
+        updateDisplay();
+        console.log("Error: Invalid Input");
+        return;
     }
 
-    // Check if the operation is divide and the second number is zero
-    if (operation === 'divide' && num2 === 0) {
-        console.log("Cannot divide by zero...");
-        return "Error, Cannot divide by zero.";
+    // Check if the number is too large
+    if (currentInput.length > 10 || previousInput.length > 10) {
+        currentInput = "Error";
+        updateDisplay();
+        console.log("Error: Number too large");
+        return;
+    }
+
+    // Check if the number is too small
+    if (currentInput.length < 1 || previousInput.length < 1) {
+        currentInput = "Error";
+        updateDisplay();
+        console.log("Error: Number too small");
+        return;
     }
     
-    // Perform the operation based on the operation type
+    // Check if the operation is invalid
+    if (operation === "÷" && current === 0) {
+        currentInput = "Error";
+        updateDisplay();
+        console.log("Error: Division by zero");
+        return; 
+    }
+ 
+    // Perform the operation
     switch (operation) {
-        case "add":
-            result = num1 + num2;
+        case "+":
+            result = prev + current;
             break;
-        case "subtract":
-            result = num1 - num2;
-            break;  
-        case "multiply":
-            result = num1 * num2;
+        case "-":
+            result = prev - current;
             break;
-        case "divide":
-            result = num1 / num2;
+        case "×":
+            result = prev * current;
+            break;
+        case "÷":
+            if (current === 0) {
+                result = "Error";
+            } else {
+                result = prev / current;
+            }
+            break;
+        case "%":
+            result = prev % current;
             break;
         default:
-            // If the operation is not valid, print an error message
-            console.log("Invalid operation..."); 
-            return "Error, Invalid operation.";
+            currentInput = "Error";
+            updateDisplay();
+            console.log("Error: Invalid Operation");
+            return;
     }
-
-    // Display the result in the result field
-    history(num1, num2, operation, result);
-    return result;
+    currentInput = result.toString();
+    logHistory(prev, current, operation, result);
+    operation = null;
+    previousInput = "";
+    updateDisplay();
 }
 
-// Reset the input fields and the result field
-function reset() {
-    document.getElementById("num1").value = "";
-    document.getElementById("num2").value = "";
-    document.getElementById("result").textContent = "";
-    document.getElementById('history').textContent = "";
+/**
+ * A function that handles the equals button click
+ */
+function handleEquals() {
+    calculate();
+}
+
+/**
+ * A function that handles the clear button click
+ */
+function handleClear() {
+    currentInput = "";
+    updateDisplay();
+}
+
+/**
+ * A function that handles the reset button click
+ */
+function handleReset() {
+    currentInput = "";
+    previousInput = "";
+    operation = null;
+    updateDisplay();
+    clearHistory();
+}
+
+/**
+ * A function that handles the plus/minus button click
+ */
+function handlePlusMinus() {
+    if (currentInput !== "") {
+        currentInput = (parseFloat(currentInput) * -1).toString();
+        updateDisplay();
+    }
+}
+
+/**
+ * A function that handles the decimal button click
+ */
+function handleDecimal() {
+    if (!currentInput.includes(".")) {
+        currentInput += ".";
+        updateDisplay();
+    }
+}
+
+/**
+ * A function that logs the calculation history
+ * @param {number} prev 
+ * @param {number} current 
+ * @param {string} operation 
+ * @param {number} result 
+ */
+function logHistory(prev, current, operation, result) {
+    const historyList = document.getElementById("history");
+    const historyItem = document.createElement("li");
+    historyItem.textContent = `${prev} ${operation} ${current} = ${result}`;
+    historyList.appendChild(historyItem);
+    document.getElementById("history").value = `${prev} ${operation} ${current} = ${result}`;
+    console.log(`History: ${prev} ${operation} ${current} = ${result}`);
+}
+
+/**
+ * A function that clears the calculation history
+ */
+function clearHistory() {
+    const historyList = document.getElementById("history");
+    while (historyList.firstChild) {
+        historyList.removeChild(historyList.firstChild);
+    }
 }
 
 // Add event listeners to the buttons
 window.onload = function() {
-    document.getElementById('add').addEventListener('click', () => {
-        document.getElementById('result').textContent = `${calculate('add')}`;
-    });
+    document.getElementById('add').addEventListener('click', () => handleOperation('+'));
+    document.getElementById('subtract').addEventListener('click', () => handleOperation('-'));
+    document.getElementById('multiply').addEventListener('click', () => handleOperation('×'));
+    document.getElementById('divide').addEventListener('click', () => handleOperation('÷'));
+    document.getElementById('percent').addEventListener('click', () => handleOperation('%'));
+    document.getElementById('equals').addEventListener('click', handleEquals);
+    document.getElementById('reset').addEventListener('click', handleReset);
+    document.getElementById('clear').addEventListener('click', handleClear);
+    document.getElementById('plusMinus').addEventListener('click', handlePlusMinus);
+    document.getElementById('decimal').addEventListener('click', handleDecimal);
 
-    document.getElementById('subtract').addEventListener('click', () => {
-        document.getElementById('result').textContent = `${calculate('subtract')}`;
-    });
-
-    document.getElementById('multiply').addEventListener('click', () => {
-        document.getElementById('result').textContent = `${calculate('multiply')}`;
-    });
-
-    document.getElementById('divide').addEventListener('click', () => {
-        document.getElementById('result').textContent = `${calculate('divide')}`;
-    });
-    document.getElementById('reset').addEventListener('click', () => {
-        reset();
-    });
+    document.getElementById('zero').addEventListener('click', () => handleNumber('0'));
+    document.getElementById('one').addEventListener('click', () => handleNumber('1'));
+    document.getElementById('two').addEventListener('click', () => handleNumber('2'));
+    document.getElementById('three').addEventListener('click', () => handleNumber('3'));
+    document.getElementById('four').addEventListener('click', () => handleNumber('4'));
+    document.getElementById('five').addEventListener('click', () => handleNumber('5'));
+    document.getElementById('six').addEventListener('click', () => handleNumber('6'));
+    document.getElementById('seven').addEventListener('click', () => handleNumber('7'));
+    document.getElementById('eight').addEventListener('click', () => handleNumber('8'));
+    document.getElementById('nine').addEventListener('click', () => handleNumber('9'));
 };
