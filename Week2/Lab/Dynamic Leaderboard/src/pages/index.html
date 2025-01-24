@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Leaderboard</title>
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body>
+        <div class="gameleaderboard">
+            <h1>Game Leaderboard</h1>
+            <table id="leaderboard">
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                </tr>
+            </table>
+        </div>
+        <div class= "addPlayer">
+            <h2>Add Player</h2>
+            <input type="text" id="playerName" placeholder="Player Name">
+            <input type="number" id="playerScore" placeholder="Player Score">
+            <button onclick="addPlayer()">Add Player</button>
+        </div>
+        <div class="filter">
+            <h2>Filter</h2>
+            <input type="number" id="minScore" placeholder="Min Score">
+            <input type="number" id="maxScore" placeholder="Max Score">
+            <button onclick="filterLeaderBoard()">Filter</button>
+        </div>
+        <script src="../js/script.js"></script>
+    </body>
+</html>
